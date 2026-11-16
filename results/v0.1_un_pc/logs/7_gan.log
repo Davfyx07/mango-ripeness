@@ -1,0 +1,32 @@
+época  10/300  loss D 1.090  loss G 1.107
+época  20/300  loss D 1.394  loss G 0.920
+época  30/300  loss D 1.303  loss G 0.871
+época  40/300  loss D 1.313  loss G 0.796
+época  50/300  loss D 1.337  loss G 0.802
+época  60/300  loss D 1.414  loss G 0.747
+época  70/300  loss D 1.312  loss G 0.774
+época  80/300  loss D 1.374  loss G 0.813
+época  90/300  loss D 1.332  loss G 0.696
+época 100/300  loss D 1.358  loss G 0.806
+época 110/300  loss D 1.341  loss G 0.826
+época 120/300  loss D 1.329  loss G 0.647
+época 130/300  loss D 1.334  loss G 0.811
+época 140/300  loss D 1.365  loss G 0.978
+época 150/300  loss D 1.260  loss G 0.960
+época 160/300  loss D 1.278  loss G 0.786
+época 170/300  loss D 1.265  loss G 0.703
+época 180/300  loss D 1.308  loss G 0.941
+época 190/300  loss D 1.349  loss G 1.285
+época 200/300  loss D 1.261  loss G 0.953
+época 210/300  loss D 1.291  loss G 1.030
+época 220/300  loss D 1.282  loss G 0.674
+época 230/300  loss D 1.370  loss G 0.855
+época 240/300  loss D 1.283  loss G 0.989
+época 250/300  loss D 1.271  loss G 1.060
+época 260/300  loss D 1.304  loss G 1.609
+época 270/300  loss D 1.209  loss G 1.082
+época 280/300  loss D 1.145  loss G 1.235
+época 290/300  loss D 1.402  loss G 0.967
+época 300/300  loss D 1.330  loss G 1.014
+300 fotos sintéticas guardadas. Muestras en outputs/gan_<clase>.png
+Para comparar:  python src/train.py --model resnet50 --train-csv train_gan --name resnet50_gan

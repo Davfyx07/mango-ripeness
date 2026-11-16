@@ -1,0 +1,9 @@
+634 fotos de 219 mangos (train + val)
+                      método  entrenamientos  accuracy  desviación                                            nota
+            Hold-out (80/20)               1     0.985       0.000                                                
+                K-fold (k=5)               5     0.929       0.045                                                
+     Stratified K-fold (k=5)               5     0.927       0.031                                                
+    Monte Carlo (20 x 80/20)              20     0.943       0.023                                                
+   Leave-one-out (por mango)             219     0.934       0.210                                                
+Leave-p-out (p=2, por mango)           23871         -           -          no se corre: demasiados entrenamientos
+       Time series (rolling)            <NA>         -           - no aplica: las fotos no son una serie de tiempo

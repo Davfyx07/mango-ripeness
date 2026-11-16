@@ -5,3 +5,5 @@ outputs/
 # Entorno de Python
 .venv/
 __pycache__/
+outputs_ddp/
+results/**/*.pt

@@ -1,0 +1,28 @@
+Resultados en test (114 fotos)
+                      modelo  accuracy  f1_macro  errores
+                    resnet50     0.956     0.957        5
+             efficientnet_b0     0.868     0.870       15
+               convnext_tiny     0.947     0.948        6
+       vit_small_patch16_224     0.965     0.965        4
+swin_tiny_patch4_window7_224     0.956     0.957        5
+            Homogéneo: 3 CNN     0.956     0.957        5
+   Homogéneo: 2 Transformers     0.956     0.957        5
+          Heterogéneo: los 5     0.956     0.957        5
+ Híbrido: CNN + Transformers     0.956     0.957        5
+
+Detalle del mejor: vit_small_patch16_224
+                precision    recall  f1-score   support
+
+        unripe      1.000     0.923     0.960        39
+partially_ripe      0.905     1.000     0.950        38
+          ripe      1.000     0.973     0.986        37
+
+      accuracy                          0.965       114
+     macro avg      0.968     0.965     0.965       114
+  weighted avg      0.968     0.965     0.965       114
+
+Matriz de confusión (filas = clase real, columnas = predicción):
+                unripe  partially_ripe  ripe
+unripe              36               3     0
+partially_ripe       0              38     0
+ripe                 0               1    36

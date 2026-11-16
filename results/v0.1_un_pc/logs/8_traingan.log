@@ -1,0 +1,20 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+dispositivo: cuda | train: 820 fotos | val: 114 fotos
+
+== resnet50_gan  {'lr': 0.00015930522616241006, 'batch_size': 16, 'weight_decay': 0.0812324508558869, 'epochs': 15, 'flip': True, 'degrade': False}
+  época  1/15  train loss 0.989 acc 0.683  |  val loss 0.770 acc 0.842  (18 s)
+  época  2/15  train loss 0.556 acc 0.868  |  val loss 0.321 acc 0.912  (6 s)
+  época  3/15  train loss 0.265 acc 0.920  |  val loss 0.288 acc 0.895  (6 s)
+  época  4/15  train loss 0.256 acc 0.912  |  val loss 0.233 acc 0.930  (6 s)
+  época  5/15  train loss 0.201 acc 0.926  |  val loss 0.169 acc 0.930  (6 s)
+  época  6/15  train loss 0.202 acc 0.934  |  val loss 0.176 acc 0.947  (6 s)
+  época  7/15  train loss 0.143 acc 0.943  |  val loss 0.145 acc 0.939  (6 s)
+  época  8/15  train loss 0.150 acc 0.950  |  val loss 0.143 acc 0.956  (6 s)
+  época  9/15  train loss 0.155 acc 0.945  |  val loss 0.122 acc 0.965  (6 s)
+  época 10/15  train loss 0.121 acc 0.959  |  val loss 0.209 acc 0.912  (6 s)
+  época 11/15  train loss 0.136 acc 0.955  |  val loss 0.152 acc 0.939  (6 s)
+  época 12/15  train loss 0.110 acc 0.962  |  val loss 0.127 acc 0.956  (6 s)
+  época 13/15  train loss 0.120 acc 0.959  |  val loss 0.149 acc 0.930  (6 s)
+  época 14/15  train loss 0.127 acc 0.956  |  val loss 0.136 acc 0.930  (6 s)
+  época 15/15  train loss 0.127 acc 0.963  |  val loss 0.129 acc 0.956  (6 s)
+mejor época: 9  val loss 0.122  val acc 0.965

@@ -1,0 +1,8 @@
+método,entrenamientos,accuracy,desviación,nota
+Hold-out (80/20),1,0.9854014598540146,0.0,
+K-fold (k=5),5,0.9290338707661542,0.044524929552847085,
+Stratified K-fold (k=5),5,0.9273590801149856,0.03080740919089275,
+Monte Carlo (20 x 80/20),20,0.9426340047021787,0.023341742636177942,
+Leave-one-out (por mango),219,0.9343186285168558,0.20976447784184624,
+"Leave-p-out (p=2, por mango)",23871,,,no se corre: demasiados entrenamientos
+Time series (rolling),,,,no aplica: las fotos no son una serie de tiempo
