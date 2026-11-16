@@ -1,0 +1,7 @@
+# Fotos originales (6 GB) y resultados de entrenamiento: no van a git
+data/raw/
+outputs/
+
+# Entorno de Python
+.venv/
+__pycache__/
