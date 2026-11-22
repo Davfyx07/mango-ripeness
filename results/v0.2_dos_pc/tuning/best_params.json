@@ -1,0 +1,37 @@
+{
+  "resnet50": {
+    "lr": 0.00015930522616241006,
+    "batch_size": 16,
+    "weight_decay": 0.0812324508558869,
+    "flip": true,
+    "degrade": false
+  },
+  "efficientnet_b0": {
+    "lr": 0.00015930522616241006,
+    "batch_size": 16,
+    "weight_decay": 0.0812324508558869,
+    "flip": true,
+    "degrade": false
+  },
+  "convnext_tiny": {
+    "lr": 5.6115164153345e-05,
+    "batch_size": 16,
+    "weight_decay": 0.006251373574521752,
+    "flip": true,
+    "degrade": false
+  },
+  "vit_small_patch16_224": {
+    "lr": 5.6115164153345e-05,
+    "batch_size": 16,
+    "weight_decay": 0.006251373574521752,
+    "flip": true,
+    "degrade": false
+  },
+  "swin_tiny_patch4_window7_224": {
+    "lr": 5.6115164153345e-05,
+    "batch_size": 16,
+    "weight_decay": 0.006251373574521752,
+    "flip": true,
+    "degrade": false
+  }
+}

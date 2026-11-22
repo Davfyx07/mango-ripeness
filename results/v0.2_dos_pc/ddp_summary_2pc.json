@@ -1,0 +1,53 @@
+{
+  "pcs": 2,
+  "tune": {
+    "resnet50": {
+      "seconds": 1251.3570744991302
+    },
+    "efficientnet_b0": {
+      "seconds": 379.90282011032104
+    },
+    "convnext_tiny": {
+      "seconds": 807.9623465538025
+    },
+    "vit_small_patch16_224": {
+      "seconds": 682.1039502620697
+    },
+    "swin_tiny_patch4_window7_224": {
+      "seconds": 874.4116926193237
+    }
+  },
+  "train": {
+    "resnet50": {
+      "epoch": 10,
+      "val_loss": 0.16663631326273867,
+      "val_acc": 0.9385964912280702,
+      "train_seconds": 288.5966145992279
+    },
+    "efficientnet_b0": {
+      "epoch": 14,
+      "val_loss": 0.11237322107741707,
+      "val_acc": 0.9473684210526315,
+      "train_seconds": 79.25714802742004
+    },
+    "convnext_tiny": {
+      "epoch": 4,
+      "val_loss": 0.07961710601260788,
+      "val_acc": 0.9736842105263158,
+      "train_seconds": 335.328412771225
+    },
+    "vit_small_patch16_224": {
+      "epoch": 7,
+      "val_loss": 0.07329863251039856,
+      "val_acc": 0.9912280701754386,
+      "train_seconds": 267.339631319046
+    },
+    "swin_tiny_patch4_window7_224": {
+      "epoch": 8,
+      "val_loss": 0.05826652458493124,
+      "val_acc": 0.9912280701754386,
+      "train_seconds": 338.7752184867859
+    }
+  },
+  "total_seconds": 5305.034909248352
+}
