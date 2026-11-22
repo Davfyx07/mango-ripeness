@@ -9,10 +9,8 @@ El PC de tu amigo y el tuyo entrenan **juntos**: Hyperband, los 5 modelos y los 
 
 Tu amigo no escribe código. Solo hay que instalarle cosas (Parte A) y, el día del entrenamiento, pegar un comando (Parte C).
 
-> **Qué está probado y qué no.**
-> - Probado en tu laptop con **dos procesos** hablando entre sí (Hyperband, entrenamiento final, ensembles).
-> - **No probado:** la conexión entre dos PCs reales. Haz la Parte B antes de empezar el entrenamiento largo.
-> - **No verificado:** que PyTorch funcione en la tarjeta de tu amigo (depende del modelo, ver A1).
+> **Qué está probado.** Todo el flujo se probó con **dos PCs reales** (una laptop y un PC de escritorio, con cable Ethernet a un mismo router): Hyperband, el entrenamiento de los 5 modelos y los ensembles. Resultados y tiempos en `results/v0.2_dos_pc/`.
+> **No verificado:** que PyTorch funcione en tarjetas viejas (serie GTX 10, ver A1).
 
 ---
 
@@ -201,6 +199,16 @@ Enable-NetAdapter -Name "Ethernet 2" -Confirm:$false
 
 ## Parte B: prueba de conexión (2 minutos)
 
+> **Obligatorio en Windows: fijar la tarjeta de red de PyTorch.** Sin esto, PyTorch publica una dirección interna del PC
+> (`::1` o `fe80::…`) que el otro PC no puede alcanzar, y los dos se quedan esperando para siempre sin dar ningún error.
+> En **cada PC**, antes de `ddp_check.py` o `train_ddp.py`, agrega esta línea (con la IP de *ese* PC):
+>
+> ```powershell
+> $env:GLOO_SOCKET_IFNAME = (Get-NetIPAddress -IPAddress "192.168.1.6").InterfaceAlias
+> ```
+>
+> Comprobado en una laptop con dos procesos: sin la variable escucha en `::1`; con ella, en la IP de la red.
+
 Antes del entrenamiento largo. No entrena nada: cada PC aporta un número y se suman.
 
 En los dos PCs: abre PowerShell, `cd` a la carpeta del proyecto y activa el entorno (`.venv\Scripts\Activate.ps1`).
@@ -208,6 +216,7 @@ En los dos PCs: abre PowerShell, `cd` a la carpeta del proyecto y activa el ento
 **Primero en el PC A** (pon la IP del PC A):
 
 ```powershell
+$env:GLOO_SOCKET_IFNAME = (Get-NetIPAddress -IPAddress "192.168.1.23").InterfaceAlias
 $env:MASTER_ADDR="192.168.1.23"; $env:MASTER_PORT="29500"; $env:WORLD_SIZE="2"; $env:RANK="0"
 python src\ddp_check.py
 ```
@@ -215,6 +224,7 @@ python src\ddp_check.py
 Se queda esperando. **Luego, en el PC B** (la misma IP del PC A; solo cambia `RANK`):
 
 ```powershell
+$env:GLOO_SOCKET_IFNAME = (Get-NetIPAddress -IPAddress "IP_DE_ESTE_PC").InterfaceAlias
 $env:MASTER_ADDR="192.168.1.23"; $env:MASTER_PORT="29500"; $env:WORLD_SIZE="2"; $env:RANK="1"
 python src\ddp_check.py
 ```
@@ -244,12 +254,14 @@ Antes de lanzar las horas de entrenamiento, comprueba que todo el flujo funciona
 
 ```powershell
 # PC A (tu laptop):
+$env:GLOO_SOCKET_IFNAME = (Get-NetIPAddress -IPAddress "192.168.1.23").InterfaceAlias
 $env:MASTER_ADDR="192.168.1.23"; $env:MASTER_PORT="29500"; $env:WORLD_SIZE="2"; $env:RANK="0"
 python src\train_ddp.py --models efficientnet_b0 --trials 2 --max-epochs 3 --epochs 2
 ```
 
 ```powershell
 # PC B (tu amigo), unos segundos después:
+$env:GLOO_SOCKET_IFNAME = (Get-NetIPAddress -IPAddress "IP_DE_ESTE_PC").InterfaceAlias
 $env:MASTER_ADDR="192.168.1.23"; $env:MASTER_PORT="29500"; $env:WORLD_SIZE="2"; $env:RANK="1"
 python src\train_ddp.py
 ```
@@ -265,6 +277,7 @@ Antes del entrenamiento real, **borra** la carpeta de la prueba para que no se m
 ```powershell
 cd $HOME\Documents\proeycts\mango
 .venv\Scripts\Activate.ps1
+$env:GLOO_SOCKET_IFNAME = (Get-NetIPAddress -IPAddress "192.168.1.23").InterfaceAlias
 $env:MASTER_ADDR="192.168.1.23"; $env:MASTER_PORT="29500"; $env:WORLD_SIZE="2"; $env:RANK="0"
 python src\train_ddp.py
 ```
@@ -274,6 +287,7 @@ python src\train_ddp.py
 ```powershell
 cd $HOME\Documents\mango
 .venv\Scripts\Activate.ps1
+$env:GLOO_SOCKET_IFNAME = (Get-NetIPAddress -IPAddress "IP_DE_ESTE_PC").InterfaceAlias
 $env:MASTER_ADDR="192.168.1.23"; $env:MASTER_PORT="29500"; $env:WORLD_SIZE="2"; $env:RANK="1"
 python src\train_ddp.py
 ```
@@ -286,7 +300,7 @@ python src\train_ddp.py
 2. Entrenamiento final de los 5 con los mejores hiperparámetros.
 3. Los ensembles, medidos en test.
 
-**Cuánto tarda:** mi estimación es de **3 a 4 horas con cable a 1 Gbps**, y más con Wi-Fi. Sale de calcular cuántos megabytes viajan por paso; no está medido en dos PCs. En tu laptop sola, Hyperband y el entrenamiento tardaron 42 minutos. Que tarde más con dos PCs es lo esperado: los gradientes viajan por la red en cada paso.
+**Cuánto tarda (medido):** con `--trials 5` y los dos PCs por **cable a 1 Gbps**, **1 h 32 min** en total. Por Wi-Fi, ResNet50 tardaba 47 s por época; por cable, 18 s. En una laptop sola, con 10 pruebas, tardó 42 minutos: con dos PCs sale más lento porque los gradientes viajan por la red en cada paso.
 
 **Opciones para acortar** (solo en el PC A):
 
