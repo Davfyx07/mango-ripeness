@@ -4,8 +4,6 @@ Esta carpeta es para la interfaz del portal: una página donde se sube la foto d
 
 **Empieza por [`../api/CONECTAR_FRONT.md`](../api/CONECTAR_FRONT.md)**: cómo conectarte desde cualquier lenguaje o framework, con la cámara, la galería y ejemplos en React, Vue, Next.js, Flutter y Kotlin. Las rutas y respuestas exactas están en [`../api/CONTRATO.md`](../api/CONTRATO.md).
 
-**Ya hay una interfaz de ejemplo que funciona: [`index.html`](index.html).** Con el backend encendido se ve en `http://localhost:8000/`. Reemplázala por la tuya, o úsala de referencia.
-
 ## Qué debe poder hacer
 
 1. Cargar la lista de modelos con `GET /models` y mostrarla como selector.

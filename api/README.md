@@ -22,7 +22,7 @@ api/
 └─ requirements-dev.txt  más las de pruebas
 ```
 
-La interfaz de ejemplo está en `web/index.html`: el backend la sirve en `/` cuando existe.
+La interfaz la hace otra persona en `web/`. Cuando haya una (su `index.html`, o la compilada en `web/dist/`), el backend la sirve en `/`; mientras tanto `/` responde 404.
 
 ## Poner el backend a funcionar
 
@@ -49,7 +49,7 @@ Encender (desarrollo):
 flask --app api.wsgi run --port 8000
 ```
 
-Comprobar: abrir `http://localhost:8000/health` (debe decir `models_available: 5`) y `http://localhost:8000/` (la interfaz de ejemplo).
+Comprobar: abrir `http://localhost:8000/health` (debe decir `models_available: 5`).
 
 En Linux o en un contenedor se usa **gunicorn**: `gunicorn api.wsgi:app --bind 0.0.0.0:8000 --workers 1 --threads 2 --timeout 120`. No corre en Windows.
 

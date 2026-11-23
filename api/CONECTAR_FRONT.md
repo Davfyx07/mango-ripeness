@@ -8,10 +8,6 @@ Lo que la interfaz tiene que hacer es solo esto:
 2. Conseguir una foto: **tomarla con la cámara** o **elegirla de la galería o del equipo**.
 3. Enviarla con el modelo elegido y **mostrar la respuesta**.
 
-## 0. Ya hay una interfaz de ejemplo que funciona
-
-[`../web/index.html`](../web/index.html) hace todo lo anterior en un solo archivo, sin librerías. Con el backend encendido, ábrela en `http://localhost:8000/`. Cópiala, léela o reemplázala: es la referencia de que todo conecta bien.
-
 ## 1. Encender el backend
 
 Desde la raíz del repositorio (los pasos completos están en [`README.md`](README.md)):
@@ -21,7 +17,7 @@ Desde la raíz del repositorio (los pasos completos están en [`README.md`](READ
 flask --app api.wsgi run --port 8000
 ```
 
-Sin los `.pt` entrenados el servidor enciende igual, pero `/models` sale vacío y `/predict` da `503`.
+Comprueba que funciona abriendo `http://localhost:8000/health` (debe decir `models_available: 5`). Sin los `.pt` entrenados el servidor enciende igual, pero `/models` sale vacío y `/predict` da `503`.
 
 ## 2. Probar la API sin escribir código
 

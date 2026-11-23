@@ -15,7 +15,7 @@ Clasifica fotos de mango en tres estados: `unripe`, `partially_ripe` y `ripe`.
 
 ## Backend y portal web
 
-`api/` es un backend Flask que recibe la foto de un mango y dice su madurez con el modelo que se elija entre los 5 entrenados. `web/` es la interfaz (hay una de ejemplo que ya funciona). Cómo encenderlo, probarlo y desplegarlo: [`api/README.md`](api/README.md). Cómo conectar una interfaz: [`api/CONECTAR_FRONT.md`](api/CONECTAR_FRONT.md).
+`api/` es un backend Flask que recibe la foto de un mango y dice su madurez con el modelo que se elija entre los 5 entrenados. `web/` es la interfaz. Cómo encenderlo, probarlo y desplegarlo: [`api/README.md`](api/README.md). Cómo conectar una interfaz: [`api/CONECTAR_FRONT.md`](api/CONECTAR_FRONT.md).
 
 ## Dataset
 

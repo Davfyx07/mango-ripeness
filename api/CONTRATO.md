@@ -36,7 +36,7 @@ Clasifica una foto. Se envía como **multipart/form-data** con dos campos:
 
 | Campo | Qué es |
 |---|---|
-| `file` | La imagen: JPEG, PNG o WebP, de hasta **25 MB** (la interfaz de ejemplo la reduce antes de subirla) |
+| `file` | La imagen: JPEG, PNG o WebP, de hasta **25 MB** |
 | `model` | El `id` de un modelo de `/models` |
 
 Respuesta correcta (`200`):
