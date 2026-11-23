@@ -7,3 +7,12 @@ outputs/
 __pycache__/
 outputs_ddp/
 results/**/*.pt
+
+# Pesos para el backend (copiados de outputs_ddp/models)
+api/models/*.pt
+
+# Backend: pruebas y cobertura
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
