@@ -1,0 +1,110 @@
+name: Backend CI
+
+# Se ejecuta en cada Pull Request hacia main y en cada push a main o a la rama backend.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, backend]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.13"
+  TORCH_CPU: "pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cpu"
+
+jobs:
+  lint:
+    name: Estilo y seguridad del código
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install ruff==0.17.6 bandit==1.9.4
+      - name: Ruff (errores y orden de imports)
+        run: ruff check api
+      - name: Ruff (formato)
+        run: ruff format --check api
+      - name: Bandit (vulnerabilidades en el código)
+        run: bandit -r api -x api/tests -q
+
+  audit:
+    name: Vulnerabilidades en las librerías
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install pip-audit
+      - run: pip-audit -r api/requirements.txt
+
+  test:
+    name: Pruebas (con cobertura mínima de 90%)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: api/requirements-dev.txt
+      - name: PyTorch (versión CPU)
+        run: ${{ env.TORCH_CPU }}
+      - run: pip install -r api/requirements-dev.txt
+      - name: Pruebas
+        run: pytest api/tests -ra --cov=api --cov-report=term-missing --cov-fail-under=90
+
+  docker:
+    name: Contenedor de punta a punta
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Pesos aleatorios (los entrenados no están en git)
+        run: |
+          ${{ env.TORCH_CPU }}
+          pip install -r api/requirements.txt
+          python -m api.tests.make_random_weights "$RUNNER_TEMP/weights"
+      - name: Construir la imagen
+        run: docker build -f api/Dockerfile -t mango-api .
+      - name: Arrancar el contenedor
+        run: |
+          docker run -d --name api -p 8000:8000 -v "$RUNNER_TEMP/weights:/app/api/models:ro" mango-api
+          for i in $(seq 1 60); do
+            curl -fsS http://localhost:8000/health && break
+            sleep 2
+          done
+          curl -fsS http://localhost:8000/health
+      - name: /models devuelve los 5 modelos
+        run: |
+          curl -fsS http://localhost:8000/models | python -c "import json,sys; d=json.load(sys.stdin); assert len(d)==5, d; print([m['id'] for m in d])"
+      - name: /predict con una foto real del repo, para cada modelo
+        run: |
+          PHOTO="Data/processed/ripe/$(ls Data/processed/ripe | head -1)"
+          for MODEL in resnet50 efficientnet_b0 convnext_tiny vit_small swin_tiny; do
+            curl -fsS -F "file=@$PHOTO" -F "model=$MODEL" http://localhost:8000/predict \
+              | python -c "import json,sys; r=json.load(sys.stdin); assert abs(sum(r['probabilities'].values())-1)<1e-3, r; print(r)"
+          done
+      - name: Los errores salen como dice el contrato
+        run: |
+          code() { curl -s -o /dev/null -w "%{http_code}" "$@"; }
+          PHOTO="Data/processed/ripe/$(ls Data/processed/ripe | head -1)"
+          test "$(code -F "file=@$PHOTO" -F model=nope http://localhost:8000/predict)" = 404
+          test "$(code -F model=vit_small http://localhost:8000/predict)" = 422
+          test "$(code -F "file=@README.md" -F model=vit_small http://localhost:8000/predict)" = 400
+          test "$(code http://localhost:8000/predict)" = 405
+      - name: Registro del contenedor
+        if: always()
+        run: docker logs api

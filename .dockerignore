@@ -1,0 +1,8 @@
+# Solo entran al contenedor el backend y la interfaz: nunca las fotos (6 GB), el entrenamiento ni los resultados
+*
+!api
+!web
+api/tests
+**/__pycache__
+**/.pytest_cache
+web/node_modules
