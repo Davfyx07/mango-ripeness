@@ -60,6 +60,7 @@ En Linux o en un contenedor se usa **gunicorn**: `gunicorn api.wsgi:app --bind 0
 | `MANGO_MODELS_DIR` | `api/models` | Carpeta con los `.pt` |
 | `MANGO_CORS_ORIGINS` | `localhost` en los puertos `5173` y `3000` | Orígenes de la interfaz que pueden llamar a la API, separados por coma |
 | `MANGO_PRELOAD` | `1` | Con `1`, gunicorn carga los 5 modelos al arrancar (la primera petición no espera) |
+| `MANGO_MAX_UPLOAD_MB` | `25` | Tamaño máximo de la foto en MB. En Lambda se pone `5`, porque Lambda no acepta más de 6 MB por petición |
 | `PORT` | `8000` | Puerto en el contenedor (lo define Cloud Run) |
 
 ## Lo más importante que hay que saber

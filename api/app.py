@@ -4,6 +4,7 @@ Variables de entorno (todas opcionales):
     MANGO_MODELS_DIR    carpeta con los .pt   (por defecto api/models)
     MANGO_CORS_ORIGINS  orígenes permitidos, separados por coma (por defecto, los de desarrollo local)
     MANGO_PRELOAD       "1" carga los 5 modelos al arrancar con gunicorn (por defecto "1"; ver wsgi.py)
+    MANGO_MAX_UPLOAD_MB límite de tamaño de la foto en MB (por defecto 25; en Lambda, 5)
 """
 
 import os
@@ -28,8 +29,10 @@ def find_web_dir():
     return None
 
 
-def create_app(models_dir=None, web_dir="auto", cors_origins=None, max_upload_mb=MAX_UPLOAD_MB):
+def create_app(models_dir=None, web_dir="auto", cors_origins=None, max_upload_mb=None):
     """Crea la aplicación. Los parámetros existen para poder probarla con otras carpetas y límites."""
+    if max_upload_mb is None:
+        max_upload_mb = int(os.environ.get("MANGO_MAX_UPLOAD_MB", MAX_UPLOAD_MB))
     app = Flask(__name__)
     app.json.ensure_ascii = False  # los mensajes en español salen legibles
     app.json.sort_keys = False  # las probabilidades salen en orden de maduración, no alfabético

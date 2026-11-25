@@ -273,3 +273,9 @@ def test_find_web_dir_prefers_dist_then_web_then_none(tmp_path, monkeypatch):
     (tmp_path / "web" / "dist").mkdir()
     (tmp_path / "web" / "dist" / "index.html").write_text("dist")
     assert find_web_dir() == tmp_path / "web" / "dist"
+
+
+def test_limite_de_tamano_se_puede_cambiar_con_variable_de_entorno(monkeypatch, tmp_path):
+    monkeypatch.setenv("MANGO_MAX_UPLOAD_MB", "5")
+    app = create_app(models_dir=tmp_path, web_dir=None, cors_origins=[])
+    assert app.config["MAX_CONTENT_LENGTH"] == 5 * 1024 * 1024

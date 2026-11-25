@@ -16,3 +16,10 @@ api/models/*.pt
 htmlcov/
 .pytest_cache/
 .ruff_cache/
+
+# Terraform
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/terraform.tfvars
+infra/crash.log
