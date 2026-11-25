@@ -7,7 +7,9 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PORT=8000 \
-    MANGO_MODELS_DIR=/app/api/models
+    MANGO_MODELS_DIR=/app/api/models \
+    AWS_LWA_PORT=8000 \
+    AWS_LWA_READINESS_CHECK_PATH=/health
 
 WORKDIR /app
 
@@ -17,7 +19,9 @@ RUN pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.p
     && pip install -r api/requirements.txt
 
 COPY api api
-COPY web web
+
+# Lambda Web Adapter: deja que Lambda hable con este servidor web. Fuera de Lambda no hace nada.
+COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:1.0.0 /lambda-adapter /opt/extensions/lambda-adapter
 
 # No corre como administrador dentro del contenedor
 RUN useradd --create-home app && chown -R app /app
