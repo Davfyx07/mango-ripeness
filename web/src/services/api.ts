@@ -19,7 +19,7 @@ export const isModel = (x: unknown): x is ModelInfo =>
   typeof x.id === "string" &&
   !!x.id &&
   typeof x.nombre === "string" &&
-  ["CNN", "Transformer"].includes(String(x.familia)) &&
+  ["CNN", "Transformer", "Ensamble"].includes(String(x.familia)) &&
   probability(x.accuracy_test);
 export function isPrediction(x: unknown): x is PredictionResponse {
   if (!record(x) || !record(x.probabilities)) return false;

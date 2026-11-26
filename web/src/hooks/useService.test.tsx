@@ -68,6 +68,6 @@ describe("Estado del servicio", () => {
     await waitFor(() => expect(result.current.status).toBe("empty"));
     act(() => result.current.reload());
     await waitFor(() => expect(result.current.status).toBe("online"));
-    expect(result.current.models).toHaveLength(5);
+    expect(result.current.models).toHaveLength(9);
   });
 });

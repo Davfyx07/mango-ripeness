@@ -11,10 +11,10 @@ import pytest
 from PIL import Image
 
 from api.app import create_app, find_web_dir
-from api.inference import CLASSES, MODELS
+from api.inference import CATALOG, CLASSES, ENSEMBLES, MODELS, Registry, load_image, preprocess
 from api.tests.helpers import REPO, make_image, make_pil, post_predict, to_bytes
 
-MODEL_IDS = list(MODELS)
+MODEL_IDS = list(CATALOG)  # los 5 modelos y los 4 ensambles
 
 
 # --------------------------------------------------------------------------- /health y /models
@@ -24,15 +24,39 @@ def test_health(client):
     assert res.get_json() == {"status": "ok", "models_available": 5}
 
 
-def test_models_lists_the_five(client):
+def test_models_lists_five_models_and_four_ensembles(client):
     data = client.get("/models").get_json()
     assert [m["id"] for m in data] == MODEL_IDS
     for m in data:
         assert set(m) == {"id", "nombre", "familia", "accuracy_test"}
-        assert m["familia"] in ("CNN", "Transformer")
+        assert m["familia"] in ("CNN", "Transformer", "Ensamble")
         assert 0 < m["accuracy_test"] <= 1
     assert sum(m["familia"] == "CNN" for m in data) == 3
     assert sum(m["familia"] == "Transformer" for m in data) == 2
+    assert sum(m["familia"] == "Ensamble" for m in data) == 4
+
+
+def test_ensemble_only_listed_with_all_its_weights(tmp_path):
+    for mid in ("vit_small", "swin_tiny"):
+        (tmp_path / MODELS[mid]["file"]).touch()
+    assert Registry(tmp_path).options() == ["vit_small", "swin_tiny", "ensamble_transformers"]
+
+
+@pytest.mark.parametrize("ensemble", list(ENSEMBLES))
+def test_ensemble_is_the_average_of_its_members(app, ensemble):
+    """Media por grupo y luego entre grupos, como src/ensemble.py."""
+    registry = app.extensions["registry"]
+    batch = preprocess(load_image(make_image()))
+
+    def mean(values):
+        return sum(values) / len(values)
+
+    expected = [
+        mean([mean([registry.predict(m, batch)["probabilities"][c] for m in g]) for g in ENSEMBLES[ensemble]["grupos"]])
+        for c in CLASSES
+    ]
+    got = registry.predict(ensemble, batch)["probabilities"]
+    assert list(got.values()) == pytest.approx(expected, abs=2e-4)  # las probabilidades salen redondeadas
 
 
 def test_models_only_lists_models_with_weights(tmp_path):
@@ -243,8 +267,8 @@ def test_contract_example_lists_the_same_models_as_the_code():
     documented = json.loads(block)
     assert [m["id"] for m in documented] == MODEL_IDS
     for m in documented:
-        assert m["nombre"] == MODELS[m["id"]]["nombre"]
-        assert m["accuracy_test"] == MODELS[m["id"]]["accuracy_test"]
+        assert m["nombre"] == CATALOG[m["id"]]["nombre"]
+        assert m["accuracy_test"] == CATALOG[m["id"]]["accuracy_test"]
 
 
 def test_contract_documents_every_route_and_error_code(app):
@@ -262,6 +286,8 @@ def test_accuracy_shown_to_users_matches_the_reported_results():
         reported = {row["modelo"]: float(row["accuracy"]) for row in csv.DictReader(f)}
     for spec in MODELS.values():
         assert round(reported[spec["arch"]], 3) == spec["accuracy_test"]
+    for spec in ENSEMBLES.values():
+        assert round(reported[spec["reporte"]], 3) == spec["accuracy_test"]
 
 
 def test_find_web_dir_prefers_dist_then_web_then_none(tmp_path, monkeypatch):

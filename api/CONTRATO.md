@@ -16,7 +16,7 @@ Este archivo es lo que une al backend (`api/`) con la interfaz (`web/`). Quien h
 
 ## `GET /models`
 
-La lista para llenar el selector. Son **5 modelos**.
+La lista para llenar el selector. Son **5 modelos** y **4 ensambles**.
 
 ```json
 [
@@ -24,11 +24,17 @@ La lista para llenar el selector. Son **5 modelos**.
   {"id": "efficientnet_b0", "nombre": "EfficientNet-B0", "familia": "CNN",         "accuracy_test": 0.895},
   {"id": "convnext_tiny",   "nombre": "ConvNeXt-Tiny",   "familia": "CNN",         "accuracy_test": 0.930},
   {"id": "vit_small",       "nombre": "ViT-Small",       "familia": "Transformer", "accuracy_test": 0.974},
-  {"id": "swin_tiny",       "nombre": "Swin-Tiny",       "familia": "Transformer", "accuracy_test": 0.974}
+  {"id": "swin_tiny",       "nombre": "Swin-Tiny",       "familia": "Transformer", "accuracy_test": 0.974},
+  {"id": "ensamble_cnn",          "nombre": "Ensamble de 3 CNN",          "familia": "Ensamble", "accuracy_test": 0.956},
+  {"id": "ensamble_transformers", "nombre": "Ensamble de 2 Transformers", "familia": "Ensamble", "accuracy_test": 0.974},
+  {"id": "ensamble_heterogeneo",  "nombre": "Ensamble heterogéneo",       "familia": "Ensamble", "accuracy_test": 0.965},
+  {"id": "ensamble_hibrido",      "nombre": "Ensamble híbrido",           "familia": "Ensamble", "accuracy_test": 0.974}
 ]
 ```
 
 `accuracy_test` se midió en 114 fotos de estudio (resultados en `results/v0.2_dos_pc/`). **No es la precisión que tendrá con fotos de celular**: conviene mostrarlo con ese aviso.
+
+Un ensamble promedia las probabilidades de varios modelos (votación suave); el híbrido promedia primero cada familia. Se pide igual que un modelo y tarda más, porque ejecuta entre 2 y 5. `models_available` en `/health` sigue contando solo los 5 modelos.
 
 ## `POST /predict`
 
@@ -37,7 +43,7 @@ Clasifica una foto. Se envía como **multipart/form-data** con dos campos:
 | Campo | Qué es |
 |---|---|
 | `file` | La imagen: JPEG, PNG o WebP, de hasta **25 MB** |
-| `model` | El `id` de un modelo de `/models` |
+| `model` | El `id` de un modelo o ensamble de `/models` |
 
 Respuesta correcta (`200`):
 

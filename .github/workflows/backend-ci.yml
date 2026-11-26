@@ -87,13 +87,13 @@ jobs:
             sleep 2
           done
           curl -fsS http://localhost:8000/health
-      - name: /models devuelve los 5 modelos
+      - name: /models devuelve los 5 modelos y los 4 ensambles
         run: |
-          curl -fsS http://localhost:8000/models | python -c "import json,sys; d=json.load(sys.stdin); assert len(d)==5, d; print([m['id'] for m in d])"
-      - name: /predict con una foto real del repo, para cada modelo
+          curl -fsS http://localhost:8000/models | python -c "import json,sys; d=json.load(sys.stdin); assert len(d)==9, d; print([m['id'] for m in d])"
+      - name: /predict con una foto real del repo, para cada modelo y ensamble
         run: |
           PHOTO="Data/processed/ripe/$(ls Data/processed/ripe | head -1)"
-          for MODEL in resnet50 efficientnet_b0 convnext_tiny vit_small swin_tiny; do
+          for MODEL in resnet50 efficientnet_b0 convnext_tiny vit_small swin_tiny ensamble_cnn ensamble_transformers ensamble_heterogeneo ensamble_hibrido; do
             curl -fsS -F "file=@$PHOTO" -F "model=$MODEL" http://localhost:8000/predict \
               | python -c "import json,sys; r=json.load(sys.stdin); assert abs(sum(r['probabilities'].values())-1)<1e-3, r; print(r)"
           done

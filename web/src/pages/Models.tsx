@@ -4,7 +4,8 @@ export default function Models() {
     <main className="wrap page">
       <h1>Modelos de IA</h1>
       <p className="intro">
-        Cinco arquitecturas evaluadas para interpretar la maduración del mango.
+        Cinco arquitecturas y cuatro ensambles evaluados para interpretar la
+        maduración del mango.
       </p>
       <section className="model-table">
         <h2>Rendimiento de los modelos</h2>
@@ -13,7 +14,7 @@ export default function Models() {
           El rendimiento puede variar según las condiciones de captura de la imagen
         </p>
         {evaluated.map((m) => (
-          <article key={m.id} className={m.familia === "CNN" ? "cnn" : "transformer"}>
+          <article key={m.id} className={m.familia.toLowerCase()}>
             <div>
               <small className="family-tag">{m.familia}</small>
               <h3>{m.nombre}</h3>
@@ -41,6 +42,16 @@ export default function Models() {
             ViT-Small y Swin-Tiny usan atención para relacionar regiones del
             mango. La confianza de una predicción individual aparece al analizar
             tu imagen.
+          </p>
+        </section>
+        <section>
+          <h2>Ensambles</h2>
+          <p>
+            Combinan varios modelos promediando sus probabilidades. Los
+            homogéneos agrupan una sola familia (3 CNN o 2 Transformers), el
+            heterogéneo da el mismo peso a los cinco modelos y el híbrido
+            promedia primero cada familia y luego ambos resultados. Tardan más
+            que un modelo individual.
           </p>
         </section>
       </div>

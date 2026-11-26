@@ -55,6 +55,21 @@ MODELS = {
 for _spec in MODELS.values():
     _spec["file"] = f"{_spec['arch']}.pt"
 
+# Ensambles por votación suave, iguales a los de src/ensemble.py. Se promedian las probabilidades dentro de
+# cada grupo y luego entre grupos: el híbrido tiene dos grupos y los demás, uno.
+_CNN = ["resnet50", "efficientnet_b0", "convnext_tiny"]
+_TRANSFORMERS = ["vit_small", "swin_tiny"]
+ENSEMBLES = {
+    mid: {"nombre": nombre, "familia": "Ensamble", "accuracy_test": accuracy, "grupos": grupos, "reporte": reporte}
+    for mid, nombre, accuracy, grupos, reporte in (
+        ("ensamble_cnn", "Ensamble de 3 CNN", 0.956, [_CNN], "Homogéneo: 3 CNN"),
+        ("ensamble_transformers", "Ensamble de 2 Transformers", 0.974, [_TRANSFORMERS], "Homogéneo: 2 Transformers"),
+        ("ensamble_heterogeneo", "Ensamble heterogéneo", 0.965, [_CNN + _TRANSFORMERS], "Heterogéneo: los 5"),
+        ("ensamble_hibrido", "Ensamble híbrido", 0.974, [_CNN, _TRANSFORMERS], "Híbrido: CNN + Transformers"),
+    )
+}
+CATALOG = {**MODELS, **ENSEMBLES}  # todo lo que se puede elegir en /predict
+
 
 class ImageError(Exception):
     """La foto no se puede usar. `status` es el código HTTP que le corresponde."""
@@ -119,6 +134,11 @@ class Registry:
         """Ids de los modelos cuyo archivo de pesos existe."""
         return [mid for mid, spec in MODELS.items() if (self.models_dir / spec["file"]).is_file()]
 
+    def options(self):
+        """Los modelos disponibles y los ensambles que tienen los pesos de todos sus integrantes."""
+        ids = self.available()
+        return ids + [eid for eid, spec in ENSEMBLES.items() if all(m in ids for g in spec["grupos"] for m in g)]
+
     def get(self, model_id):
         with self._lock:
             if model_id not in self._loaded:
@@ -136,10 +156,12 @@ class Registry:
 
     def predict(self, model_id, batch):
         """Tensor (1, 3, 224, 224) -> resultado con la forma que describe api/CONTRATO.md."""
-        model = self.get(model_id)
+        groups = ENSEMBLES[model_id]["grupos"] if model_id in ENSEMBLES else [[model_id]]
+        loaded = [[self.get(m) for m in group] for group in groups]  # la carga no cuenta como inferencia
         start = time.perf_counter()
         with torch.inference_mode():
-            probs = model(batch).softmax(1)[0].tolist()
+            means = [torch.stack([model(batch).softmax(1)[0] for model in group]).mean(0) for group in loaded]
+            probs = torch.stack(means).mean(0).tolist()
         ms = round((time.perf_counter() - start) * 1000)
         best = max(range(len(CLASSES)), key=probs.__getitem__)
         return {

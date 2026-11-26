@@ -7,7 +7,7 @@ export interface HealthResponse {
 export interface ModelInfo {
   id: string;
   nombre: string;
-  familia: "CNN" | "Transformer";
+  familia: "CNN" | "Transformer" | "Ensamble";
   accuracy_test: number;
 }
 export type PredictionProbabilities = Record<RipenessClass, number>;
