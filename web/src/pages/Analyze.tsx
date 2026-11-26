@@ -248,7 +248,7 @@ export default function Analyze({ service }: { service: Service }) {
           </select>
           {selected && (
             <p className="hint">
-              Precisión experimental en estudio:{" "}
+              Accuracy (test):{" "}
               {percent(selected.accuracy_test)}.
             </p>
           )}

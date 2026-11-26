@@ -29,9 +29,9 @@ export default function Results({
       ) : result ? (
         <>
           <h2 className={result.label}>{labels[result.label]}</h2>
-          <div className="confidence">{percent(result.confidence)} <small>Confianza</small></div>
+          <div className="confidence">{percent(result.confidence)} <small>Confidence (esta foto)</small></div>
           <p>
-            Confianza del modelo para esta fotografía. El resultado puede ser
+            Confidence del modelo para esta fotografía. El resultado puede ser
             incorrecto.
           </p>
           <h3>Distribución de probabilidades</h3>
@@ -56,7 +56,7 @@ export default function Results({
             <dd>{model?.familia}</dd>
             <dt>Tiempo de inferencia</dt>
             <dd>{result.inference_ms} ms</dd>
-            <dt>Precisión experimental</dt>
+            <dt>Accuracy (test)</dt>
             <dd>{model && percent(model.accuracy_test)}</dd>
           </dl>
           <button onClick={reset}>

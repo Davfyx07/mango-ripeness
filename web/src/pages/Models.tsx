@@ -40,7 +40,7 @@ export default function Models() {
           <h2>Transformers visuales</h2>
           <p>
             ViT-Small y Swin-Tiny usan atención para relacionar regiones del
-            mango. La confianza de una predicción individual aparece al analizar
+            mango. La confidence de una predicción individual aparece al analizar
             tu imagen.
           </p>
         </section>
