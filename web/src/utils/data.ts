@@ -35,4 +35,8 @@ export const evaluated: ModelInfo[] = [
     familia: "Transformer",
     accuracy_test: 0.974,
   },
+  { id: "ensamble_cnn", nombre: "Ensamble de 3 CNN", familia: "Ensamble", accuracy_test: 0.956 },
+  { id: "ensamble_transformers", nombre: "Ensamble de 2 Transformers", familia: "Ensamble", accuracy_test: 0.974 },
+  { id: "ensamble_heterogeneo", nombre: "Ensamble heterogéneo", familia: "Ensamble", accuracy_test: 0.965 },
+  { id: "ensamble_hibrido", nombre: "Ensamble híbrido", familia: "Ensamble", accuracy_test: 0.974 },
 ];

@@ -225,11 +225,26 @@ export default function Analyze({ service }: { service: Service }) {
             <option value="" disabled>
               Selecciona un modelo
             </option>
-            {models.map((m) => (
-              <option value={m.id} key={m.id}>
-                {m.nombre} · {m.familia}
-              </option>
-            ))}
+            {(
+              [
+                ["CNN", "CNN"],
+                ["Transformer", "Transformers"],
+                ["Ensamble", "Ensambles"],
+              ] as const
+            ).map(([familia, titulo]) => {
+              const group = models.filter((m) => m.familia === familia);
+              return (
+                group.length > 0 && (
+                  <optgroup label={titulo} key={familia}>
+                    {group.map((m) => (
+                      <option value={m.id} key={m.id}>
+                        {m.nombre}
+                      </option>
+                    ))}
+                  </optgroup>
+                )
+              );
+            })}
           </select>
           {selected && (
             <p className="hint">

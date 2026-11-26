@@ -367,6 +367,8 @@ dd { margin: 0; font-weight: 650; text-align: right; }
 .family-tag { color: var(--leaf); font-weight: 600; }
 .transformer .family-tag { color: #805918; }
 .transformer .track i { background: #ac7925; }
+.ensamble .family-tag { color: #9a4f17; }
+.ensamble .track i { background: #cf792e; }
 .family-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -374,6 +376,7 @@ dd { margin: 0; font-weight: 650; text-align: right; }
   margin: 30px 0;
 }
 .family-grid h2 { margin-bottom: 8px; }
+.family-grid section:nth-child(3) { grid-column: 1 / -1; }
 
 /* Camera */
 dialog {

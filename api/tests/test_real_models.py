@@ -10,7 +10,7 @@ import csv
 import pytest
 
 from api.app import create_app
-from api.inference import MODELS
+from api.inference import CATALOG, MODELS
 from api.tests.helpers import REPO, post_predict
 
 MODELS_DIR = REPO / "api" / "models"
@@ -31,7 +31,7 @@ def _test_split():
 
 
 @pytest.mark.real_models
-@pytest.mark.parametrize("model", list(MODELS))
+@pytest.mark.parametrize("model", list(CATALOG))
 def test_served_accuracy_matches_training_report(real_client, model):
     """Las 114 fotos de test, una por una por la API, contra la precisión del resultado guardado."""
     rows = _test_split()
@@ -42,7 +42,7 @@ def test_served_accuracy_matches_training_report(real_client, model):
         hits += body["label"] == row["label"]
     accuracy = hits / len(rows)
     # 0.03 = 3 fotos: margen por float16 en GPU (entrenamiento) contra float32 en CPU (servidor)
-    assert accuracy == pytest.approx(MODELS[model]["accuracy_test"], abs=0.03), f"{model}: {accuracy:.3f}"
+    assert accuracy == pytest.approx(CATALOG[model]["accuracy_test"], abs=0.03), f"{model}: {accuracy:.3f}"
 
 
 @pytest.mark.real_models

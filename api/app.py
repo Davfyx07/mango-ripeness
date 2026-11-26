@@ -14,7 +14,7 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException, MethodNotAllowed
 
-from .inference import MODELS, ImageError, Registry, load_image, preprocess
+from .inference import CATALOG, ImageError, Registry, load_image, preprocess
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_ORIGINS = "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000"
@@ -75,8 +75,8 @@ def create_app(models_dir=None, web_dir="auto", cors_origins=None, max_upload_mb
     def models():
         return jsonify(
             [
-                {"id": mid, **{k: MODELS[mid][k] for k in ("nombre", "familia", "accuracy_test")}}
-                for mid in registry.available()
+                {"id": mid, **{k: CATALOG[mid][k] for k in ("nombre", "familia", "accuracy_test")}}
+                for mid in registry.options()
             ]
         )
 
@@ -86,7 +86,7 @@ def create_app(models_dir=None, web_dir="auto", cors_origins=None, max_upload_mb
         model_id = request.form.get("model")
         if file is None or not model_id:
             return error(422, "Faltan los campos 'file' (la imagen) y 'model' (el id del modelo)")
-        available = registry.available()
+        available = registry.options()
         if not available:
             return error(503, "No hay modelos cargados en el servidor")
         if model_id not in available:
